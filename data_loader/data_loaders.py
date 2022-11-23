@@ -1,16 +1,16 @@
-from torchvision import datasets, transforms
+from torchvision import transforms
 from base import BaseDataLoader
+from data_loader.dataset import TrashDataSet
 
 
-class MnistDataLoader(BaseDataLoader):
-    """
-    MNIST data loading demo using BaseDataLoader
-    """
-    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
-        trsfm = transforms.Compose([
+class TrashDataLoader(BaseDataLoader):
+    def __init__(self, data_dir, batch_size, dataset, transform=None, shuffle=True, validation_split=0.0, num_workers=1, training=True):
+        tsfm = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,))
+            transforms.Normalize(0.5, 0.5)
         ])
+        self.transform = transform if transform else tsfm
         self.data_dir = data_dir
-        self.dataset = datasets.MNIST(self.data_dir, train=training, download=True, transform=trsfm)
-        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+        self.dataset = TrashDataSet(data_dir, transform)
+        self.data_loader = {}
+        super().__init__(dataset, batch_size, shuffle, validation_split, num_workers)
