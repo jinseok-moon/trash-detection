@@ -2,7 +2,7 @@ import os
 import numpy as np
 import glob
 from torch.utils.data import Dataset
-from PIL import Image
+import cv2
 
 
 # TODO albumentation transform (jsmoon, 2022-11-23)
@@ -15,19 +15,15 @@ class TrashDataSet(Dataset):
         self.data_length_per_batch = len(self.coco[0].imgs.keys())
         self.data_size = self.data_length_per_batch * len(self.coco)
         self.transform = transform
+        self.cats = self.coco[0].cats
 
-    # TODO image load with opencv (jsmoon, 2022-11-23)
     def __getitem__(self, index):
         image_batch, image_index = index // 500, index % 500
         ann_ids = self.coco[image_batch].getAnnIds(imgIds=image_index)
         target = self.coco[image_batch].loadAnns(ann_ids)
-
         image_info = self.coco[image_batch].loadImgs(image_index)[0]
 
-        # image = cv2.imread(os.path.join(self.root, image_info['file_name']))
-
-        with open(os.path.join(self.root, image_info['file_name']), 'rb') as f:
-            img = Image.open(f).convert('RGB')
+        img = cv2.imread(os.path.join(self.root, image_info['file_name']))
         if self.transform is not None:
             img = self.transform(img)
 
@@ -40,3 +36,6 @@ class TrashDataSet(Dataset):
 
     def __len__(self):
         return self.data_size
+
+    def get_cats(self):
+        return self.cats

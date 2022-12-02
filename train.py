@@ -19,16 +19,16 @@ torch.backends.cudnn.deterministic = True
 torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
+
 def main(config):
     logger = config.get_logger('train')
 
     dataset_transform = config.init_obj('transform', module_transform)
     # setup data_loader instances
-    data_loader = config.init_obj('data_loader', module_data, transform=dataset_transform)
+    data_loader = config.init_obj('data_loader', module_data, transform=dataset_transform.transform)
     valid_data_loader = data_loader.split_validation()
-
     # build model architecture, then print to console
-    model = config.init_obj('arch', module_arch)
+    model = config.init_obj('arch', module_arch, num_classes=len(data_loader.get_cats()))
     logger.info(model)
 
     # prepare for (multi-device) GPU training

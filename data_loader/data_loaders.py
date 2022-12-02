@@ -12,5 +12,7 @@ class TrashDataLoader(BaseDataLoader):
         self.transform = transform if transform else tsfm
         self.data_dir = data_dir
         self.dataset = TrashDataSet(data_dir, transform)
-        self.data_loader = {}
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
+
+    def get_cats(self):
+        return self.dataset.get_cats()

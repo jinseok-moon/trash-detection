@@ -33,15 +33,27 @@ def prepare_device(n_gpu_use):
     n_gpu = torch.cuda.device_count()
     if n_gpu_use > 0 and n_gpu == 0:
         print("Warning: There\'s no GPU available on this machine,"
-              "training will be performed on CPU.")
+              "training will be performed on CPU or M1 if device is m1 metal.")
         n_gpu_use = 0
     if n_gpu_use > n_gpu:
         print(f"Warning: The number of GPU\'s configured to use is {n_gpu_use}, but only {n_gpu} are "
               "available on this machine.")
         n_gpu_use = n_gpu
     device = torch.device('cuda:0' if n_gpu_use > 0 else 'cpu')
+
+    # if not torch.backends.mps.is_available():
+    #     if not torch.backends.mps.is_built():
+    #         print("MPS not available because the current PyTorch install was not "
+    #               "built with MPS enabled.")
+    #     else:
+    #         print("MPS not available because the current MacOS version is not 12.3+ "
+    #               "and/or you do not have an MPS-enabled device on this machine.")
+    # else:
+    #     print("MPS available. Training will be perfomed on Metal.")
+    #     device = torch.device("mps")
     list_ids = list(range(n_gpu_use))
     return device, list_ids
+
 
 class MetricTracker:
     def __init__(self, *keys, writer=None):

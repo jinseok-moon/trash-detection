@@ -4,13 +4,13 @@ from base import BaseModel
 import torchvision.models as models
 
 
-class JSFasterRCNN(BaseModel):
+class MyFasterRCNN(BaseModel):
     def __init__(self, num_classes=10):
         super().__init__()
-        self.nets = models.detection.fasterrcnn_resnet50_fpn_v2(
-            weights=models.detection.FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT,
-            num_classes=num_classes
-        )
+        self.model = models.detection.fasterrcnn_resnet50_fpn_v2(
+            weights=models.detection.FasterRCNN_ResNet50_FPN_V2_Weights.DEFAULT)
+        in_features = self.model.roi_heads.box_predictor.cls_score.in_features
+        self.model.roi_heads.box_predictor = models.detection.faster_rcnn.FastRCNNPredictor(in_features, num_classes)
 
     def forward(self, x):
-        return self.nets(x)
+        return self.model(x)

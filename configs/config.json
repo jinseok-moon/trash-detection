@@ -1,9 +1,9 @@
 {
-    "name": "jsnet_faster_rcnn",
+    "name": "faster_rcnn",
     "n_gpu": 1,
 
     "arch": {
-        "type": "JSFasterRCNN",
+        "type": "MyFasterRCNN",
         "args": {}
     },
     "transform": {
@@ -14,10 +14,8 @@
         "type": "TrashDataLoader",
         "args":{
             "data_dir": "data/train",
-            "batch_size": 128,
-            "shuffle": true,
-            "validation_split": 0.1,
-            "num_workers": 2
+            "batch_size": 1,
+            "shuffle": false
         }
     },
     "optimizer": {
