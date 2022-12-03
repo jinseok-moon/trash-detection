@@ -8,7 +8,9 @@
     },
     "transform": {
         "type": "BaseTransform",
-        "args": {}
+        "args": {
+        "train": true
+        }
     },
     "data_loader": {
         "type": "TrashDataLoader",

@@ -2,7 +2,7 @@ import os
 import numpy as np
 import glob
 from torch.utils.data import Dataset
-import cv2
+from PIL import Image
 
 
 # TODO albumentation transform (jsmoon, 2022-11-23)
@@ -23,16 +23,13 @@ class TrashDataSet(Dataset):
         target = self.coco[image_batch].loadAnns(ann_ids)
         image_info = self.coco[image_batch].loadImgs(image_index)[0]
 
-        img = cv2.imread(os.path.join(self.root, image_info['file_name']))
-        if self.transform is not None:
-            img = self.transform(img)
+        with open(os.path.join(self.root, image_info['file_name']), 'rb') as f:
+            img = Image.open(f).convert('RGB')
 
-        bboxes = []
-        for ann in target:
-            bbox = np.array(ann['bbox'])
-            bboxes.append(bbox)
-        bboxes = np.array(bboxes)
-        return img, bboxes
+        if self.transform is not None:
+            img, target = self.transform(img, target)
+
+        return img, target
 
     def __len__(self):
         return self.data_size
