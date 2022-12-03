@@ -27,7 +27,10 @@ class TrashDataSet(Dataset):
             img = Image.open(f).convert('RGB')
 
         if self.transform is not None:
-            img, target = self.transform(img, target)
+            transformed = self.transform(image=img, bboxes=target['bbox'], class_labels=target['category_id'])
+            img = transformed['image']
+            target['bbox'] = transformed['bboxes']
+            target['category_id'] = transformed['class_labels']
 
         return img, target
 

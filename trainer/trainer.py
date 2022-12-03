@@ -40,11 +40,11 @@ class Trainer(BaseTrainer):
         self.model.train()
         self.train_metrics.reset()
         for batch_idx, (images, targets) in enumerate(self.data_loader):
-            images = [image.to(self.device) for image in images]
+            image = images.to(self.device)
             targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
 
             self.optimizer.zero_grad()
-            output = self.model(images, targets)
+            output = self.model(image, targets)
             loss = self.criterion(output, targets)
             loss.backward()
             self.optimizer.step()
@@ -59,7 +59,7 @@ class Trainer(BaseTrainer):
                     epoch,
                     self._progress(batch_idx),
                     loss.item()))
-                self.writer.add_image('input', make_grid(images[0].cpu(), nrow=8, normalize=True))
+                self.writer.add_image('input', make_grid(image.cpu(), nrow=8, normalize=True))
 
             if batch_idx == self.len_epoch:
                 break

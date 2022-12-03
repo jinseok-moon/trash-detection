@@ -24,7 +24,8 @@ class Compose:
     def __call__(self, image, target):
         for t in self.transforms:
             image = t(image)
-            image, target = t(image, target)
+            target = t({k: t(v) for k, v in _t.items()} for _t in target())
+            # image, target = t(image, target)
         return image, target
 
 
