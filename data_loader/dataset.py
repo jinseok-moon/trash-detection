@@ -22,7 +22,7 @@ class TrashDataSet(Dataset):
         ann_ids = self.coco[image_batch].getAnnIds(imgIds=image_index)
         target = self.coco[image_batch].loadAnns(ann_ids)
         image_info = self.coco[image_batch].loadImgs(image_index)[0]
-
+        # TODO target setting with bbox, labels
         with open(os.path.join(self.root, image_info['file_name']), 'rb') as f:
             img = Image.open(f).convert('RGB')
 

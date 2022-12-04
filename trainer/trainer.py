@@ -40,11 +40,13 @@ class Trainer(BaseTrainer):
         self.model.train()
         self.train_metrics.reset()
         for batch_idx, (images, targets) in enumerate(self.data_loader):
-            image = images.to(self.device)
-            targets = [{k: v.to(self.device) for k, v in t.items()} for t in targets]
+            images = images.to(self.device)
+            targets['bbox'] = targets['bbox'].to(self.device)
+            targets['category_id'] = targets['category_id'] =
+            '[{k: v.to(self.device) for k, v in t.items()} for t in targets]
 
             self.optimizer.zero_grad()
-            output = self.model(image, targets)
+            output = self.model(images, targets)
             loss = self.criterion(output, targets)
             loss.backward()
             self.optimizer.step()
